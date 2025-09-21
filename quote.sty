@@ -1,0 +1,40 @@
+% 自定义引用样式，减小内边距，避免整体视觉上左空白过大
+\usepackage{mdframed}
+\newmdenv[
+  leftline=true,
+  rightline=false,
+  topline=false,
+  bottomline=false,
+  linecolor=gray,
+  linewidth=1.2pt,
+  innerleftmargin=6pt,
+  innerrightmargin=6pt,
+  innertopmargin=4pt,
+  innerbottommargin=4pt,
+  skipabove=\baselineskip,
+  skipbelow=\baselineskip
+]{customquote}
+% 去掉 LaTeX 默认 quote 环境左右额外缩进（quote 本身会有 list 结构缩进）
+\renewenvironment{quote}{\begin{customquote}\noindent}{\end{customquote}}
+
+% ---------------- 表格左对齐与收紧设置 ----------------
+% Pandoc 生成的 pipe table 常用 longtable，如果出现左侧整体缩进去的视觉（特别是列内容很多、多行换行），
+% 这里将 longtable 左右边距设为 0，使其与正文左缘对齐。
+\AtBeginDocument{%
+  % longtable 边距
+  \providecommand{\LTleft}{0pt}% 兼容性处理
+  \providecommand{\LTright}{0pt}% 兼容性处理
+  \setlength{\LTleft}{0pt}%
+  \setlength{\LTright}{0pt}%
+  % 普通表格（tabular）通常位于一个隐含的 \centering 中；如需彻底左对齐可通过取消该居中。
+}
+
+% 减少单元格左右空白（默认 6pt）
+\setlength{\tabcolsep}{4pt}
+% 适度行高，避免多行内容过于紧贴
+\renewcommand{\arraystretch}{1.12}
+
+% 取消表格自动居中：Pandoc 一般不会强制，但如果模板或宏包插入了 \centering，可用下面的钩子。
+% 将浮动体 table 内部的居中改成左对齐（若不需要可注释掉）。
+\usepackage{etoolbox}
+\AtBeginEnvironment{table}{\raggedright}
